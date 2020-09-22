@@ -3,7 +3,9 @@
 # - Virtual Server using Ubuntu 18.04 custom image
 # - Virtual server initialized with boot script 
 ##############################################################################
-
+locals {
+  secondary_subnets = compact(list(var.secondary_subnet_id_1 , var.secondary_subnet_id_2, var.secondary_subnet_id_3, var.secondary_subnet_id_4))
+}
 ##############################################################################
 # Read/validate sshkey
 ##############################################################################
@@ -25,8 +27,8 @@ data "ibm_is_instance_profile" "vnf_profile" {
 //security group
 resource "ibm_is_security_group" "vnf_security_group" {
   name           = "${var.vnf_security_group}"
-  vpc            = "${data.ibm_is_subnet.vnf_subnet1.vpc}"
-  resource_group = "${data.ibm_is_subnet.vnf_subnet1.resource_group}"
+  vpc            = "${data.ibm_is_subnet.vnf_primary_subnet.vpc}"
+  resource_group = "${data.ibm_is_subnet.vnf_primary_subnet.resource_group}"
 }
 
 //security group rule to allow ssh
@@ -63,23 +65,25 @@ resource "ibm_is_instance" "vnf_vsi" {
   name           = "${var.vnf_instance_name}"
   image          = "${ibm_is_image.vnf_custom_image.id}"
   profile        = "${data.ibm_is_instance_profile.vnf_profile.name}"
-  resource_group = "${data.ibm_is_subnet.vnf_subnet1.resource_group}"
+  resource_group = "${data.ibm_is_subnet.vnf_primary_subnet.resource_group}"
 
   primary_network_interface {
     name = "eth0"
-    subnet = "${data.ibm_is_subnet.vnf_subnet1.id}"
+    subnet = "${data.ibm_is_subnet.vnf_primary_subnet.id}"
     security_groups = ["${ibm_is_security_group.vnf_security_group.id}"]
   }
   
-  network_interfaces {
-    name   = "eth1"
-    subnet = "${data.ibm_is_subnet.vnf_subnet2.id}"
-    //if vnf_security_group need to be added in this interface then uncomment below line
-    #security_groups = ["${ibm_is_security_group.vnf_security_group.id}"]
+  dynamic "network_interfaces" {
+    for_each = local.secondary_subnets
+    content {
+    name = format("eth%d", (network_interfaces.key+1))
+    subnet = network_interfaces.value
+    security_groups = ["${ibm_is_security_group.vnf_security_group.id}"]
+    }
   }
-
-  vpc  = "${data.ibm_is_subnet.vnf_subnet1.vpc}"
-  zone = "${data.ibm_is_subnet.vnf_subnet1.zone}"
+  
+  vpc  = "${data.ibm_is_subnet.vnf_primary_subnet.vpc}"
+  zone = "${data.ibm_is_subnet.vnf_primary_subnet.zone}"
   keys = ["${data.ibm_is_ssh_key.vnf_ssh_pub_key.id}"]
 
 

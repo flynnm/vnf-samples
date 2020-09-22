@@ -7,10 +7,6 @@
 #  - Floating_IP attached to virtual server's primary network interface
 ##############################################################################
 
-data "ibm_is_subnet" "vnf_subnet1"{
-   identifier = "${var.subnet_id1}"
-}
-
-data "ibm_is_subnet" "vnf_subnet2"{
-   identifier = "${var.subnet_id2}"
+data "ibm_is_subnet" "vnf_primary_subnet"{
+   identifier = "${var.primary_subnet_id}"
 }
