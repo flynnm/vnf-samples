@@ -32,12 +32,13 @@ locals {
     }
 
     bigip-14-1-2-6-0-0-2-all-1slot = {
-      "us-south" = "r006-f0a8cba9-1e9e-4771-87ba-20b7fd33b16a"
+      "us-south" = "r134-8d65ae52-abf5-418b-94a0-2b1da3e97d38"
       "us-east"  = "r014-eccb5c62-82d9-438c-b81e-716f3506700f"
       "eu-gb"    = "r018-72ee97b8-ffeb-4427-bd2a-fc60e4d2b6b5"
       "eu-de"    = "r010-cf56a548-d5ca-4833-b0a6-bde256140d93"
       "jp-tok"   = "r022-44656c7d-427c-4e06-9253-3224cd1df827"
       "eu-fr2"   = "r030-e75c31f5-0372-4b1f-a9a9-75b0b147b128"
+      "dal-stage"= "r134-8d65ae52-abf5-418b-94a0-2b1da3e97d38"
     }
 
     bigip-14-1-2-6-0-0-2-ltm-1slot = {
