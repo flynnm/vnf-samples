@@ -69,7 +69,7 @@ data "ibm_is_security_group" "vnf_security_group" {
 
 //vnf instance
 resource "ibm_is_instance" "vnf_vsi" {
-  depends_on = ["ibm_is_security_group_rule.vnf_sg_rule_out_all"]
+  //depends_on = ["ibm_is_security_group_rule.vnf_sg_rule_out_all"]
   name           = "${var.vnf_instance_name}"
   image          = lookup(local.image_map[var.image_name], data.ibm_is_region.region.name)
   profile        = "${data.ibm_is_instance_profile.vnf_profile.name}"
