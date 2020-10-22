@@ -25,7 +25,7 @@ data "ibm_is_instance_profile" "vnf_profile" {
 # Read/validate sg
 ##############################################################################
 data "ibm_is_security_group" "vnf_security_group" {
-  id = "${var.vnf_security_group}"
+  name = "${var.vnf_security_group}"
 }
 
 ##############################################################################
